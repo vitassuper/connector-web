@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
+    npm \
     libonig-dev \
     libxml2-dev \
     zip \
@@ -25,6 +26,6 @@ RUN mkdir -p /home/www/.composer && \
     chown -R www:www /home/www
 
 # Set working directory
-WORKDIR /var/www
+WORKDIR /home/www
 
 USER www
