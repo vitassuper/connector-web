@@ -8,8 +8,12 @@
                     <div class="card-header">{{!$bot->id ? 'Create new' : 'Update'}} bot</div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('bots.store') }}">
+                        <form method="POST" action="{{ !$bot->id ? route('bots.store') : route('bots.update', $bot) }}">
                             @csrf
+
+                            @if($bot->id)
+                                @method('PUT')
+                            @endif
 
                             <div class="row mb-3">
                                 <label for="name" class="col-md-4 col-form-label text-md-end">Name</label>
@@ -56,7 +60,7 @@
                             <div class="row mb-0">
                                 <div class="col-md-6 offset-md-4">
                                     <button type="submit" class="btn btn-primary">
-                                        Create
+                                        {{!$bot->id ? 'Create' : 'Update'}}
                                     </button>
                                 </div>
                             </div>

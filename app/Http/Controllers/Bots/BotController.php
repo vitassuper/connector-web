@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Bots;
 use App\Models\Bot;
 use App\DataObjects\BotData;
 use App\Actions\CreateBotAction;
+use App\Actions\UpdateBotAction;
 use App\Requests\CreateBotRequest;
 use Illuminate\Routing\Redirector;
 use Illuminate\Contracts\View\View;
@@ -34,8 +35,20 @@ class BotController extends Controller
 
     public function store(CreateBotRequest $request, CreateBotAction $createBotAction): Redirector|Application|RedirectResponse
     {
-        $createBotAction->execute(BotData::createFromRequest($request));
+//        $createBotAction->execute(BotData::createFromRequest($request));
 
+        return redirect(route('bots.index'));
+    }
+
+    public function update(Bot $bot, CreateBotRequest $request, UpdateBotAction $updateBotAction): Redirector|Application|RedirectResponse
+    {
+        $updateBotAction->execute($bot, BotData::createFromRequest($request));
+
+        return redirect(route('bots.index'));
+    }
+
+    public function show(Bot $bot): Redirector|Application|RedirectResponse
+    {
         return redirect(route('bots.index'));
     }
 

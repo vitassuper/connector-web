@@ -19,7 +19,6 @@ class CreateBotAction
     public function execute(BotData $data): Bot
     {
         $bot = new Bot();
-        $bot->secret_token = Str::random(32);
 
         return $this->updateBotAction->execute($bot, $data);
     }
