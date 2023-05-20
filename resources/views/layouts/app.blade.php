@@ -17,6 +17,12 @@
 </head>
 <body>
 <div id="app">
+
+    @if(session('success') || session('fail'))
+        <div class="alert {{ session('fail') ? 'alert-danger' : 'alert-success' }}" id="flash-message">
+            {{ session('success') }} {{ session('fail') }}
+        </div>
+    @endif
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm px-3">
 
             <a class="navbar-brand" href="{{ url('/') }}">
@@ -92,5 +98,14 @@
         @yield('content')
     </main>
 </div>
+<script type="module">
+    $(document).ready(function() {
+        if ($('#flash-message').length) {
+            setTimeout(function() {
+                $('#flash-message').fadeOut('slow');
+            }, 1000);
+        }
+    });
+</script>
 </body>
 </html>

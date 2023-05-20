@@ -45,7 +45,10 @@
                                         <td>{{$deal->date_open}}</td>
                                         <td>{{$deal->date_close}}</td>
                                         <td>
-                                            <button type="button" class="btn btn-info expander">Expand</button>
+                                            <div class="d-flex justify-content-end">
+                                                <button type="button" class="btn btn-info expander me-2">Expand</button>
+                                                <button type="button" class="btn btn-danger formModalButton" data-attr="{{ route('deals.close', $deal) }}">Close</button>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr style="display: none">
@@ -89,6 +92,7 @@
             </div>
         </div>
     </div>
+    @include('components.modal_form', ['modalBtn' => 'Close'])
     <script type="module">
         $('.expander').click(function () {
             $(this).closest('tr').next().toggle();

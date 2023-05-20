@@ -17,6 +17,8 @@
                                     <th>Id</th>
                                     <th>Name</th>
                                     <th>Exchange</th>
+                                    <th>Side</th>
+                                    <th>Secret</th>
                                     <th>Status</th>
                                     <th>Date created</th>
                                     <th>Date modified</th>
@@ -29,6 +31,8 @@
                                     <td>{{$bot->id}}</td>
                                     <td>{{$bot->name ?? 'No name'}}</td>
                                     <td>Binance</td>
+                                    <td>{{$bot->getSideLabel()}}</td>
+                                    <td>{{$bot->secret}}</td>
                                     <td>{{$bot->enabled ? 'Enabled' : 'Disabled'}}</td>
                                     <td>{{$bot->created_at}}</td>
                                     <td>{{$bot->updated_at}}</td>

@@ -59,6 +59,6 @@ class Deal extends Model
 
     public function bot(): BelongsTo
     {
-        return $this->belongsTo(Bot::class, 'bot_id', 'id')->withDefault(['name' => 'Unknown', 'id' => -1]);
+        return $this->belongsTo(Bot::class, 'bot_id', 'id')->withTrashed()->withDefault(['name' => 'Unknown', 'id' => -1]);
     }
 }

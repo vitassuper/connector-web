@@ -11,6 +11,8 @@ class UpdateBotAction
     {
         $bot->fill([
             'name' => $data->name,
+            'side' => $data->side,
+            'secret' => $data->secret,
         ]);
 
         $bot->save();
