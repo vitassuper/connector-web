@@ -30,26 +30,16 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label for="api_key" class="col-md-4 col-form-label text-md-end">Api key</label>
+                                <label for="exchange" class="col-md-4 col-form-label text-md-end">Exchange</label>
 
                                 <div class="col-md-6">
-                                    <input id="api_key" type="text" class="form-control @error('api_key') is-invalid @enderror" name="api_key" value="" autocomplete="api_key">
+                                    <select id="exchange" class="form-select @error('exchange') is-invalid @enderror" name="exchange" required>
+                                        @foreach($exchanges as $exchange)
+                                            <option value="{{$exchange->id}}">{{$exchange->name}}</option>
+                                        @endforeach
+                                    </select>
 
-                                    @error('api_key')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <label for="api_secret" class="col-md-4 col-form-label text-md-end">Api secret</label>
-
-                                <div class="col-md-6">
-                                    <input id="api_secret" type="text" class="form-control @error('api_secret') is-invalid @enderror" name="api_secret" value="" autocomplete="api_secret">
-
-                                    @error('api_secret')
+                                    @error('exchange')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>

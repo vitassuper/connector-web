@@ -3,39 +3,43 @@
 namespace App\Http\Controllers\Bots;
 
 use App\Models\Bot;
+use App\Base\BaseController;
 use App\DataObjects\BotData;
 use App\Actions\CreateBotAction;
 use App\Actions\UpdateBotAction;
 use App\Requests\CreateBotRequest;
 use Illuminate\Routing\Redirector;
 use Illuminate\Contracts\View\View;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\Foundation\Application;
 
-class BotController extends Controller
+class BotController extends BaseController
 {
-    public function index(): string
+    public function index(): Factory|View|Application
     {
-        $bots = Bot::orderBy('id', 'asc')->paginate(100);
+        $bots = Bot::orderBy('id')->paginate(100);
 
-        return view('bot.index', ['bots' => $bots])->render();
+        return view('bot.index', ['bots' => $bots]);
     }
 
-    public function create(): string
+    public function create(): Factory|View|Application
     {
-        return view('bot.form', ['bot' => new Bot()])->render();
+        $exchanges = $this->getCurrentUser()->exchanges()->get();
+
+        return view('bot.form', ['bot' => new Bot(), 'exchanges' => $exchanges]);
     }
 
-    public function edit(Bot $bot): string
+    public function edit(Bot $bot): Factory|View|Application
     {
-        return view('bot.form', ['bot' => $bot])->render();
+        $exchanges = $this->getCurrentUser()->exchanges()->get();
+
+        return view('bot.form', ['bot' => $bot, 'exchanges' => $exchanges]);
     }
 
     public function store(CreateBotRequest $request, CreateBotAction $createBotAction): Redirector|Application|RedirectResponse
     {
-//        $createBotAction->execute(BotData::createFromRequest($request));
+        $createBotAction->execute(BotData::createFromRequest($request));
 
         return redirect(route('bots.index'));
     }
@@ -59,14 +63,9 @@ class BotController extends Controller
         return redirect(route('bots.index'));
     }
 
-    public function delete(Bot $bot): Factory|View|Application
+    public function destroy(Bot $bot): Redirector|Application|RedirectResponse
     {
-        return view('components.delete', ['url' => route('bots.destroy', $bot)]);
-    }
-
-    public function destroy(Bot $bot)
-    {
-//        $bot->delete();
+        $bot->delete();
 
         return redirect(route('bots.index'));
     }

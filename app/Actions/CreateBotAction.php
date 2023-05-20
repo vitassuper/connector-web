@@ -2,8 +2,6 @@
 
 namespace App\Actions;
 
-use Str;
-use Hash;
 use App\Models\Bot;
 use App\DataObjects\BotData;
 
@@ -19,6 +17,9 @@ class CreateBotAction
     public function execute(BotData $data): Bot
     {
         $bot = new Bot();
+
+        $bot->api_key = 'secret';
+        $bot->api_secret = 'also secret';
 
         return $this->updateBotAction->execute($bot, $data);
     }

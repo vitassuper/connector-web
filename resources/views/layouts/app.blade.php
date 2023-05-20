@@ -33,7 +33,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('bots.index') }}">
+                            <a class="nav-link" href="{{ route('exchanges.index') }}">
                                 Exchanges
                             </a>
                         </li>

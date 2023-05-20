@@ -10,7 +10,7 @@ class UpdateBotAction
     public function execute(Bot $bot, BotData $data): Bot
     {
         $bot->fill([
-            'name' => $data->name
+            'name' => $data->name,
         ]);
 
         $bot->save();

@@ -11,7 +11,7 @@
                 Are you sure?
             </div>
             <div class="modal-footer">
-                <form method="POST" action="{{$url}}">
+                <form method="POST" action="">
                     @method('delete')
                     @csrf
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -21,3 +21,17 @@
         </div>
     </div>
 </div>
+<script type="module">
+    $(document).on('click', '.deleteButton', function(event) {
+        event.preventDefault();
+
+        const $this = $(this);
+        const $form = $('#deleteModal form');
+
+        console.log($form)
+
+        $form.attr('action', $this.attr('data-attr'));
+
+        $('#deleteModal').modal("show");
+    })
+</script>

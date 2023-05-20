@@ -2,9 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DealController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Bots\BotController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Exchanges\ExchangeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,14 +23,14 @@ Route::middleware(['guest'])->group(function () {
     Route::post('login', [LoginController::class, 'login']);
 });
 
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
-    Route::get('bots/delete/{bot}', [BotController::class, 'delete'])->name('bots.delete');
     Route::get('bots/{bot}/toggle', [BotController::class, 'toggle'])->name('bots.toggle');
     Route::resource('bots', BotController::class);
+
+    Route::resource('exchanges', ExchangeController::class)->except(['edit', 'update']);
 
     Route::get('deals', [DealController::class, 'index'])->name('deals.index');
 });

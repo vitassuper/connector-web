@@ -35,7 +35,7 @@
                                     <td>
                                         <div class="d-flex justify-content-end">
                                             <a class="btn btn-info me-2" href="{{route('bots.edit', $bot)}}">Edit</a>
-                                            <button type="button" class="deleteButton btn btn-danger me-2" data-attr="{{ route('bots.delete', $bot) }}" title="Delete">
+                                            <button type="button" class="deleteButton btn btn-danger me-2" data-attr="{{ route('bots.destroy', $bot) }}" title="Delete">
                                                 Delete
                                             </button>
                                             <a class="btn {{$bot->enabled ? 'btn-warning' : 'btn-success'}}" href="{{route('bots.toggle', $bot)}}">{{$bot->enabled ? 'Disable' : 'Enable'}}</a>
@@ -61,7 +61,7 @@
             </div>
         </div>
     </div>
-    <div id="delete-modal"></div>
+    @include('components.delete')
     <script type="module">
         const jsonExample = JSON.stringify({
             "connector_secret": "test123",
@@ -71,18 +71,5 @@
         }, null, 4)
 
         $('#abc').append(jsonExample)
-
-        $(document).on('click', '.deleteButton', function(event) {
-            const href = $(this).attr('data-attr');
-
-            $.ajax({
-                    url: href,
-                    success: function (result) {
-                        $('#delete-modal').html(result);
-                        $('#deleteModal').modal("show")
-                    }
-                }
-            );
-        })
     </script>
 @endsection
