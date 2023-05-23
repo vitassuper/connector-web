@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\Bot
@@ -56,6 +57,11 @@ class Bot extends Model
             self::LONG_SIDE => 'Long',
             self::SHORT_SIDE => 'Short',
         ];
+    }
+
+    public function copyBot(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'copy_bot_id');
     }
 
     public function getSideLabel(): string

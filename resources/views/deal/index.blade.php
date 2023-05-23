@@ -21,8 +21,8 @@
                     <div class="card-header">Deals</div>
                     <div class="card-body">
                         @if($deals->count())
-                            <table class="table">
-                                <thead>
+                            <table class="table deals-table table-bordered">
+                                <thead class="sticky-top table-secondary">
                                 <tr>
                                     <th>Id</th>
                                     <th>Pair</th>
@@ -34,7 +34,7 @@
                                     <th></th>
                                 </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="bg-white">
                                 @foreach($deals as $deal)
                                     <tr>
                                         <td>{{$deal->id}}</td>
@@ -47,13 +47,15 @@
                                         <td>
                                             <div class="d-flex justify-content-end">
                                                 <button type="button" class="btn btn-info expander me-2">Expand</button>
-                                                <button type="button" class="btn btn-danger formModalButton" data-attr="{{ route('deals.close', $deal) }}">Close</button>
+                                                <button type="button" class="btn btn-danger formModalButton"
+                                                        data-attr="{{ route('deals.close', $deal) }}">Close
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr style="display: none">
                                         <td colspan="8">
-                                            <table class="table">
+                                            <table class="table table-striped">
                                                 <p>Average price: {{$deal->average_price}}</p>
                                                 <thead>
                                                 <tr>

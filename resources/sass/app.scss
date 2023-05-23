@@ -11,3 +11,9 @@
 .pagination {
     justify-content: center;
 }
+
+
+.deals-table > tbody > tr:nth-child(4n+1) {
+    --#{$prefix}table-accent-bg: var(--#{$prefix}table-striped-bg);
+    color: var(--#{$prefix}table-striped-color);
+}

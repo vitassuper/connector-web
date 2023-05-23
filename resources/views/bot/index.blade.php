@@ -11,54 +11,63 @@
                     </div>
                     <div class="card-body">
                         @if($bots->count())
-                        <table class="table">
-                            <thead>
+                            <table class="table table-striped table-bordered">
+                                <thead class="sticky-top table-secondary">
                                 <tr>
                                     <th>Id</th>
                                     <th>Name</th>
                                     <th>Exchange</th>
                                     <th>Side</th>
                                     <th>Secret</th>
+                                    <th>Copy bot</th>
                                     <th>Status</th>
                                     <th>Date created</th>
                                     <th>Date modified</th>
                                     <th></th>
                                 </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($bots as $bot)
-                                <tr>
-                                    <td>{{$bot->id}}</td>
-                                    <td>{{$bot->name ?? 'No name'}}</td>
-                                    <td>Binance</td>
-                                    <td>{{$bot->getSideLabel()}}</td>
-                                    <td>{{$bot->secret}}</td>
-                                    <td>{{$bot->enabled ? 'Enabled' : 'Disabled'}}</td>
-                                    <td>{{$bot->created_at}}</td>
-                                    <td>{{$bot->updated_at}}</td>
-                                    <td>
-                                        <div class="d-flex justify-content-end">
-                                            <a class="btn btn-info me-2" href="{{route('bots.edit', $bot)}}">Edit</a>
-                                            <button type="button" class="deleteButton btn btn-danger me-2" data-attr="{{ route('bots.destroy', $bot) }}" title="Delete">
-                                                Delete
-                                            </button>
-                                            <a class="btn {{$bot->enabled ? 'btn-warning' : 'btn-success'}}" href="{{route('bots.toggle', $bot)}}">{{$bot->enabled ? 'Disable' : 'Enable'}}</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
+                                </thead>
+                                <tbody class="bg-white">
+                                @foreach($bots as $bot)
+                                    <tr>
+                                        <td>{{$bot->id}}</td>
+                                        <td>{{$bot->name ?? 'No name'}}</td>
+                                        <td>Binance</td>
+                                        <td>{{$bot->getSideLabel()}}</td>
+                                        <td>{{$bot->secret}}</td>
+                                        <td>
+                                            @if($bot->copyBot)
+                                                {{$bot->copyBot->name}}({{$bot->copyBot->id}})
+                                            @endif
+                                        </td>
+                                        <td>{{$bot->enabled ? 'Enabled' : 'Disabled'}}</td>
+                                        <td>{{$bot->created_at}}</td>
+                                        <td>{{$bot->updated_at}}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-end">
+                                                <a class="btn btn-info me-2"
+                                                   href="{{route('bots.edit', $bot)}}">Edit</a>
+                                                <button type="button" class="deleteButton btn btn-danger me-2"
+                                                        data-attr="{{ route('bots.destroy', $bot) }}" title="Delete">
+                                                    Delete
+                                                </button>
+                                                <a class="btn {{$bot->enabled ? 'btn-warning' : 'btn-success'}}"
+                                                   href="{{route('bots.toggle', $bot)}}">{{$bot->enabled ? 'Disable' : 'Enable'}}</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
 
-                        </table>
+                            </table>
                         @else
                             <div class="col-md-8">
                                 <span>There are no bots</span>&nbsp;<a href="{{route('bots.create')}}">Create bot</a>
                             </div>
                         @endif
-                            <div>
-                                <button>Copy</button>
-                                <pre><code id="abc" class="language-json"></code></pre>
-                            </div>
+                        <div>
+                            <button>Copy</button>
+                            <pre><code id="abc" class="language-json"></code></pre>
+                        </div>
                     </div>
                     <div class="card-footer">{{$bots->links()}}</div>
                 </div>
