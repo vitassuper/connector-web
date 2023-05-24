@@ -24,12 +24,12 @@ class CreateExchangeRequest extends BaseRequest
             'api_key' => [
                 'required',
                 'string',
-                'size:64',
+                'max:255',
             ],
             'api_secret' => [
                 'required',
                 'string',
-                'size:64'
+                'max:255'
             ]
         ];
     }
