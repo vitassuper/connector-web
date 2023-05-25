@@ -31,7 +31,7 @@
                                     <tr>
                                         <td>{{$bot->id}}</td>
                                         <td>{{$bot->name ?? 'No name'}}</td>
-                                        <td>Binance</td>
+                                        <td>{{$bot->exchange->name}}({{$bot->exchange->type}})</td>
                                         <td>{{$bot->getSideLabel()}}</td>
                                         <td>{{$bot->secret}}</td>
                                         <td>

@@ -9,12 +9,14 @@ class BotData
     public string $name;
     public int $side;
     public string $secret;
+    public int $exchangeId;
 
     public function __construct(array $data)
     {
         $this->name = $data['name'];
         $this->side = $data['side'];
         $this->secret = $data['secret'];
+        $this->exchangeId = $data['exchange'];
     }
 
     public static function createFromRequest(CreateBotRequest $request): BotData

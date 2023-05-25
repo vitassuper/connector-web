@@ -17,11 +17,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $name
  * @property int|null $copy_bot_id
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property int|null $side
  * @property string|null $secret
+ * @property int|null $exchange_id
+ * @property-read Bot|null $copyBot
  * @method static \Illuminate\Database\Eloquent\Builder|Bot newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Bot newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Bot onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Bot query()
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereApiKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereApiSecret($value)
@@ -29,11 +32,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bot whereExchangeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereSide($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|Bot withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Bot withoutTrashed()
  * @mixin \Eloquent
  */
 class Bot extends Model
@@ -67,5 +73,11 @@ class Bot extends Model
     public function getSideLabel(): string
     {
         return self::getAvailableSides()[$this->side];
+    }
+
+    public function exchange(): BelongsTo
+    {
+        return $this->belongsTo(Exchange::class, 'exchange_id', 'id')
+            ->withTrashed()->withDefault(['name' => 'Unknown', 'type' => 'Unknown']);
     }
 }

@@ -15,6 +15,8 @@ class UpdateBotAction
             'secret' => $data->secret,
         ]);
 
+        $bot->exchange_id = $data->exchangeId;
+
         $bot->save();
 
         return $bot;

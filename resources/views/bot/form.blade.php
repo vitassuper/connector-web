@@ -57,7 +57,8 @@
                                     <select id="side" class="form-select @error('side') is-invalid @enderror"
                                             name="side" required>
                                         @foreach(\App\Models\Bot::getAvailableSides() as $side => $label)
-                                            <option @if($bot->side === $side) selected @endif value="{{$side}}">{{$label}}</option>
+                                            <option @if($bot->side === $side) selected
+                                                    @endif value="{{$side}}">{{$label}}</option>
                                         @endforeach
                                     </select>
 

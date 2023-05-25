@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\CryptHelper;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -17,22 +18,29 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $api_secret
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|Exchange newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Exchange newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Exchange onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Exchange query()
  * @method static \Illuminate\Database\Eloquent\Builder|Exchange whereApiKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Exchange whereApiSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Exchange whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Exchange whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Exchange whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Exchange whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Exchange whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Exchange whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Exchange whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|Exchange withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Exchange withoutTrashed()
  * @mixin \Eloquent
- * @property-read \App\Models\User|null $user
  */
 class Exchange extends Model
 {
+    use SoftDeletes;
+
     public const BINANCE_TYPE = 'binance';
     public const OKEX_TYPE = 'okex';
 
