@@ -47,9 +47,14 @@
                                         <td>
                                             <div class="d-flex justify-content-end">
                                                 <button type="button" class="btn btn-info expander me-2">Expand</button>
-                                                <button type="button" class="btn btn-danger formModalButton"
-                                                        data-attr="{{ route('deals.close', $deal) }}">Close
-                                                </button>
+                                                @if(!$deal->isClosed())
+                                                    <button type="button" class="btn btn-success addSOModalButton me-2"
+                                                            data-attr="{{ route('deals.add', $deal)}}">Add SO
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger formModalButton"
+                                                            data-attr="{{ route('deals.close', $deal) }}">Close
+                                                    </button>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
@@ -94,6 +99,7 @@
             </div>
         </div>
     </div>
+    @include('bot.add_safety_order')
     @include('components.modal_form', ['modalBtn' => 'Close'])
     <script type="module">
         $('.expander').click(function () {

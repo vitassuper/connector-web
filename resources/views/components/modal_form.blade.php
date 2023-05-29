@@ -27,8 +27,6 @@
         const $this = $(this);
         const $form = $('#formModal form');
 
-        console.log($form)
-
         $form.attr('action', $this.attr('data-attr'));
 
         $('#formModal').modal("show");

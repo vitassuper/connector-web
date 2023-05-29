@@ -33,5 +33,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('exchanges', ExchangeController::class)->except(['edit', 'update']);
 
     Route::post('deals/{deal}/close', [DealController::class, 'close'])->name('deals.close');
+    Route::post('deals/{deal}/add', [DealController::class, 'add'])->name('deals.add');
     Route::get('deals', [DealController::class, 'index'])->name('deals.index');
 });

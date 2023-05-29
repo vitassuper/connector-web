@@ -57,6 +57,11 @@ class Deal extends Model
         return $totalValue / $totalVolume;
     }
 
+    public function isClosed(): bool
+    {
+        return (bool) $this->date_close;
+    }
+
     public function bot(): BelongsTo
     {
         return $this->belongsTo(Bot::class, 'bot_id', 'id')->withTrashed()->withDefault(['name' => 'Unknown', 'id' => -1]);

@@ -28,8 +28,6 @@
         const $this = $(this);
         const $form = $('#deleteModal form');
 
-        console.log($form)
-
         $form.attr('action', $this.attr('data-attr'));
 
         $('#deleteModal').modal("show");
