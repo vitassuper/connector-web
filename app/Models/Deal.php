@@ -57,6 +57,11 @@ class Deal extends Model
         return $totalValue / $totalVolume;
     }
 
+    public function getTotalVolumeAttribute()
+    {
+        return $this->orders->sum(fn (Order $order) => $order->volume);
+    }
+
     public function isClosed(): bool
     {
         return (bool) $this->date_close;

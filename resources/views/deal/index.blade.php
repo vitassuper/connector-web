@@ -29,6 +29,7 @@
                                     <th>Bot</th>
                                     <th>Safety orders</th>
                                     <th>PNL</th>
+                                    <th>Unrealized PNL</th>
                                     <th>Date open</th>
                                     <th>Date close</th>
                                     <th></th>
@@ -42,6 +43,7 @@
                                         <td>{{$deal->bot->name}}({{$deal->bot->id}})</td>
                                         <td>{{$deal->safety_order_count}}</td>
                                         <td>{{$deal->pnl}}</td>
+                                        <td class="@if($deal->uPnl > 0) text-success @endif @if($deal->uPnl < 0) text-danger @endif">@if($deal->uPnl) {{$deal->uPnl}} ({{$deal->uPnlPercentage}}%) @endif</td>
                                         <td>{{$deal->date_open}}</td>
                                         <td>{{$deal->date_close}}</td>
                                         <td>

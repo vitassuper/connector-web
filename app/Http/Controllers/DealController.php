@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Http;
 use App\Models\Deal;
 use App\Actions\GetPnlHistory;
 use Illuminate\Routing\Redirector;
@@ -19,6 +20,31 @@ class DealController extends Controller
     {
         $deals = Deal::orderBy('date_close', 'desc')->orderBy('date_open', 'desc')
             ->with(['orders'])->paginate(50);
+
+        // TEMP SOLUTION
+        $result = Http::get('https://fapi.binance.com/fapi/v1/ticker/price');
+        $prices = collect(json_decode($result->body()));
+
+        $deals->each(function ($deal) use ($prices) {
+            if (null === $deal->date_close) {
+                $record = $prices->firstWhere('symbol', str_replace('/', '', strstr($deal->pair, ':', true)));
+
+                if ($record === null) {
+                    $deal->uPnl = null;
+                    $deal->uPnlPercentage = null;
+                } else {
+                    $entrySum = $deal->average_price * $deal->total_volume;
+                    $currentSum = $record->price * $deal->total_volume;
+
+                    $sign = $deal->side ? 1 : -1;
+
+                    $deal->uPnl = ($currentSum - $entrySum) * $sign;
+                    $deal->uPnlPercentage = round((($record->price - $deal->average_price) / $deal->average_price) * 100 * $sign, 2);
+                }
+            }
+        });
+
+        // TEMP SOLUTION
 
         return view('deal.index', ['deals' => $deals, 'chartData' => $getPnlHistory->execute()]);
     }
