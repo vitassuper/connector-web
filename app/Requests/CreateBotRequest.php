@@ -23,13 +23,20 @@ class CreateBotRequest extends FormRequest
                 Rule::exists(Exchange::class, 'id')
             ],
             'side' => [
-                'required',
+                'required_if:copy_bot_id,null',
+                'nullable',
                 Rule::in(array_keys(Bot::getAvailableSides()))
             ],
             'secret' => [
-                'required',
+                'required_if:copy_bot_id,null',
+                'nullable',
                 'string',
                 'max:32',
+            ],
+            'copy_bot_id' => [
+                'nullable',
+                'numeric',
+                Rule::exists(Bot::class, 'id')
             ]
         ];
     }
