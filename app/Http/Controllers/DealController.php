@@ -38,7 +38,7 @@ class DealController extends Controller
 
                     $sign = $deal->side ? 1 : -1;
 
-                    $deal->uPnl = ($currentSum - $entrySum) * $sign;
+                    $deal->uPnl = round(($currentSum - $entrySum) * $sign, 2);
                     $deal->uPnlPercentage = round((($record->price - $deal->average_price) / $deal->average_price) * 100 * $sign, 2);
                 }
             }
