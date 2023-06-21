@@ -64,6 +64,7 @@
                                         <td colspan="8">
                                             <table class="table table-striped">
                                                 <p>Average price: {{$deal->average_price}}</p>
+                                                <p>Total volume: {{$deal->total_volume}}</p>
                                                 <thead>
                                                 <tr>
                                                     <th>Order Id</th>
