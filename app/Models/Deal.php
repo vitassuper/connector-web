@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use Exception;
+use App\Enums\SideType;
+use App\Enums\TransactionType;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -43,10 +47,8 @@ class Deal extends Model
         return $this->hasMany(Order::class, 'deal_id', 'id')->orderBy('created_at', 'desc');
     }
 
-    public function getAveragePriceAttribute(): float|int
+    private function getAveragePrice(Collection $orders): float|int
     {
-        $orders = $this->orders;
-
         $totalValue = $orders->sum(fn (Order $order) => $order->price * $order->volume);
         $totalVolume = $orders->sum('volume');
 
@@ -57,9 +59,79 @@ class Deal extends Model
         return $totalValue / $totalVolume;
     }
 
-    public function getTotalVolumeAttribute()
+    public function getOpenAveragePrice(): float|int
     {
-        return $this->orders->sum(fn (Order $order) => $order->volume);
+        return $this->getAveragePrice($this->getOpenOrders());
+    }
+
+    public function getCloseAveragePrice(): float|int
+    {
+        return $this->getAveragePrice($this->getCloseOrders());
+    }
+
+    public function getCloseOrders()
+    {
+        $side = $this->getCloseTransactionType()->value;
+
+        return $this->orders->filter(fn (Order $order) => $order->side === $side);
+    }
+
+    public function getOpenOrders()
+    {
+        $side = $this->getOpenTransactionType()->value;
+
+        return $this->orders->filter(fn (Order $order) => $order->side === $side);
+    }
+
+    public function getPnl(): float|int
+    {
+        $openAveragePrice = $this->getOpenAveragePrice();
+        $closeAveragePrice = $this->getCloseAveragePrice();
+
+        $entrySum = $openAveragePrice * $this->getTotalVolume();
+        $closeSum = $closeAveragePrice * $this->getTotalVolume();
+
+        $sign = $this->bot->side->value ? 1 : -1;
+
+        //TODO: refactor
+        $fee = 0.04;
+
+        $closeFee = $closeSum / 100 * $fee;
+        $entryFee = $entrySum / 100 * $fee;
+
+        return (($closeSum - $entrySum) * $sign) - $entryFee - $closeFee;
+    }
+
+    public function getOpenTransactionType(): TransactionType
+    {
+        if ($this->bot->side === SideType::Long) {
+            return TransactionType::Buy;
+        }
+
+        if ($this->bot->side === SideType::Short) {
+            return TransactionType::Sell;
+        }
+
+        throw new Exception('Unknown side');
+    }
+
+    public function getCloseTransactionType(): TransactionType
+    {
+        if ($this->bot->side === SideType::Long) {
+            return TransactionType::Sell;
+        }
+
+        if ($this->bot->side === SideType::Short) {
+            return TransactionType::Buy;
+        }
+
+        throw new Exception('Unknown side');
+    }
+
+    public function getTotalVolume()
+    {
+        return $this->getOpenOrders()
+            ->sum(fn (Order $order) => $order->volume);
     }
 
     public function isClosed(): bool

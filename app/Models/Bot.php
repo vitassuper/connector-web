@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SideType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,13 +19,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $name
  * @property int|null $copy_bot_id
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property int|null $side
+ * @property SideType|null $side
  * @property string|null $secret
  * @property int|null $exchange_id
  * @property-read Bot|null $copyBot
+ * @property-read \App\Models\Exchange|null $exchange
  * @method static \Illuminate\Database\Eloquent\Builder|Bot newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Bot newQuery()
- * @method static \Illuminate\Database\Query\Builder|Bot onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bot onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Bot query()
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereApiKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereApiSecret($value)
@@ -38,41 +40,42 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereSide($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bot whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|Bot withTrashed()
- * @method static \Illuminate\Database\Query\Builder|Bot withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bot withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bot withoutTrashed()
  * @mixin \Eloquent
  */
 class Bot extends Model
 {
     use SoftDeletes;
 
-    public const SHORT_SIDE = 0;
-    public const LONG_SIDE = 1;
-
     protected $table = 'bots';
 
     protected $guarded = ['api_key', 'api_secret'];
 
     protected $attributes = [
-        'enabled' => false
+        'enabled' => false,
     ];
 
-    public static function getAvailableSides(): array
-    {
-        return [
-            self::LONG_SIDE => 'Long',
-            self::SHORT_SIDE => 'Short',
-        ];
-    }
+    protected $casts = [
+        'side' => SideType::class
+    ];
 
     public function copyBot(): BelongsTo
     {
         return $this->belongsTo(self::class, 'copy_bot_id');
     }
 
+    public static function getAvailableSides(): array
+    {
+        return [
+            SideType::Long->value => SideType::Long->name,
+            SideType::Short->value => SideType::Short->name,
+        ];
+    }
+
     public function getSideLabel(): string
     {
-        return self::getAvailableSides()[$this->side];
+        return $this->side->value ? 'Long' : 'Short';
     }
 
     public function exchange(): BelongsTo

@@ -33,13 +33,13 @@ class DealController extends Controller
                     $deal->uPnl = null;
                     $deal->uPnlPercentage = null;
                 } else {
-                    $entrySum = $deal->average_price * $deal->total_volume;
-                    $currentSum = $record->price * $deal->total_volume;
+                    $entrySum = $deal->average_price * $deal->getTotalVolume();
+                    $currentSum = $record->price * $deal->getTotalVolume();
 
                     $sign = $deal->side ? 1 : -1;
 
                     $deal->uPnl = round(($currentSum - $entrySum) * $sign, 2);
-                    $deal->uPnlPercentage = round((($record->price - $deal->average_price) / $deal->average_price) * 100 * $sign, 2);
+                    $deal->uPnlPercentage = round((($record->price - $deal->getOpenAveragePrice()) / $deal->getOpenAveragePrice()) * 100 * $sign, 2);
                 }
             }
         });
