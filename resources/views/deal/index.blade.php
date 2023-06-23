@@ -42,8 +42,10 @@
                                         <td>{{$deal->pair}}</td>
                                         <td>{{$deal->bot->name}}({{$deal->bot->id}})</td>
                                         <td>{{$deal->safety_order_count}}</td>
-                                        <td>{{$deal->getPnl()}}</td>
-                                        <td class="@if($deal->uPnl > 0) text-success @endif @if($deal->uPnl < 0) text-danger @endif">@if($deal->uPnl) {{$deal->uPnl}} ({{$deal->uPnlPercentage}}%) @endif</td>
+                                        <td>{{$deal->date_close ? $deal->getPnl() : ''}}</td>
+                                        <td class="@if($deal->uPnl > 0) text-success @endif @if($deal->uPnl < 0) text-danger @endif">@if(!is_null($deal->uPnl))
+                                                {{$deal->uPnl}} ({{$deal->uPnlPercentage}}%)
+                                            @endif</td>
                                         <td>{{$deal->date_open}}</td>
                                         <td>{{$deal->date_close}}</td>
                                         <td>
