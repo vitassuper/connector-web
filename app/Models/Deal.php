@@ -21,8 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $pnl
  * @property int $bot_id
  * @property-read \App\Models\Bot|null $bot
- * @property-read int|float $average_price
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Order[] $orders
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
  * @property-read int|null $orders_count
  * @method static \Illuminate\Database\Eloquent\Builder|Deal newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Deal newQuery()

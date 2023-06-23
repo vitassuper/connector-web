@@ -65,7 +65,7 @@
                                     <tr style="display: none">
                                         <td colspan="8">
                                             <table class="table table-striped">
-                                                <p>Average price: {{$deal->average_price}}</p>
+                                                <p>Average price: {{$deal->getOpenAveragePrice()}}</p>
                                                 <p>Total volume: {{$deal->getTotalVolume()}}</p>
                                                 <thead>
                                                 <tr>
