@@ -68,14 +68,14 @@ class Deal extends Model
         return $this->getAveragePrice($this->getCloseOrders());
     }
 
-    public function getCloseOrders()
+    public function getCloseOrders(): Collection
     {
         $side = $this->getCloseTransactionType()->value;
 
         return $this->orders->filter(fn (Order $order) => $order->side === $side);
     }
 
-    public function getOpenOrders()
+    public function getOpenOrders(): Collection
     {
         $side = $this->getOpenTransactionType()->value;
 

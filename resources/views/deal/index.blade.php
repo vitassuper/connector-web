@@ -10,10 +10,53 @@
 
                     <div class="card-header">Filters</div>
                     <div class="card-body">
-                        <form>
-                            <select class="form-select">
-                                <option>Status</option>
-                            </select>
+                        <form action="{{route('deals.index')}}">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-4 col-lg-3">
+                                    <label for="deal_id" class="col-md-4 col-form-label">Deal Id</label>
+                                    <input class="form-control" value="{{$filters['deal_id'] ?? ''}}" name="deal_id"
+                                           id="deal_id"/>
+                                </div>
+                                <div class="col-sm-6 col-md-4 col-lg-3">
+                                    <label for="status" class="col-md-4 col-form-label">Status</label>
+                                    <select name="status" id="status" class="form-select">
+                                        <option value="">None</option>
+                                        @foreach(['active', 'closed'] as $status)
+                                            <option
+                                                @if(isset($filters['status']) ? $filters['status'] === $status : null) selected
+                                                @endif value="{{ $status }}">{{ ucfirst($status) }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-sm-6 col-md-4 col-lg-3">
+                                    <label for="bot_id" class="col-md-4 col-form-label">Bot Id</label>
+                                    <select name="bot_id" id="bot_id" class="form-select">
+                                        <option value="">None</option>
+                                        @foreach($bots as $bot)
+                                            <option
+                                                @if(isset($filters['bot_id']) ? (int) $filters['bot_id'] === $bot->id : null) selected
+                                                @endif value="{{$bot->id}}">{{$bot->name}}({{$bot->id}})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-sm-6 col-md-4 col-lg-3">
+                                    <label for="pair" class="col-md-4 col-form-label">Pair</label>
+                                    <select name="pair" id="pair" class="form-select">
+                                        <option value="">None</option>
+                                        @foreach($pairs as $pair)
+                                            <option
+                                                @if(isset($filters['pair']) ? $filters['pair'] === $pair->pair : null) selected
+                                                @endif value="{{$pair->pair}}">{{$pair->pair}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <button class="btn btn-success my-2" type="submit">Filter</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>

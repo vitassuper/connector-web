@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Http;
+use App\Models\Bot;
 use App\Models\Deal;
 use App\Actions\GetPnlHistory;
+use App\Actions\GetDealsAction;
+use App\Requests\ListDealsRequest;
 use Illuminate\Routing\Redirector;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use App\DataObjects\DealFiltersObject;
 use Illuminate\Contracts\View\Factory;
 use App\Actions\SendAddDealRequestAction;
 use App\Actions\SendCloseDealRequestAction;
@@ -16,37 +19,16 @@ use Illuminate\Contracts\Foundation\Application;
 
 class DealController extends Controller
 {
-    public function index(GetPnlHistory $getPnlHistory): Factory|View|Application
+    public function index(ListDealsRequest $request, GetDealsAction $getDealsAction, GetPnlHistory $getPnlHistory): Factory|View|Application
     {
-        $deals = Deal::orderBy('date_close', 'desc')->orderBy('date_open', 'desc')
-            ->with(['orders'])->paginate(50);
+        $pairs = Deal::groupBy('pair')->select('pair')->get();
 
-        // TEMP SOLUTION
-        $result = Http::get('https://fapi.binance.com/fapi/v1/ticker/price');
-        $prices = collect(json_decode($result->body()));
+        $deals = $getDealsAction->execute(DealFiltersObject::fromRequest($request));
+        $filters = $request->validated();
 
-        $deals->each(function ($deal) use ($prices) {
-            if (null === $deal->date_close) {
-                $record = $prices->firstWhere('symbol', str_replace('/', '', strstr($deal->pair, ':', true)));
+        $deals->appends($filters);
 
-                if ($record === null) {
-                    $deal->uPnl = null;
-                    $deal->uPnlPercentage = null;
-                } else {
-                    $entrySum = $deal->getOpenAveragePrice() * $deal->getTotalVolume();
-                    $currentSum = $record->price * $deal->getTotalVolume();
-
-                    $sign = $deal->side ? 1 : -1;
-
-                    $deal->uPnl = round(($currentSum - $entrySum) * $sign, 2);
-                    $deal->uPnlPercentage = round((($record->price - $deal->getOpenAveragePrice()) / $deal->getOpenAveragePrice()) * 100 * $sign, 2);
-                }
-            }
-        });
-
-        // TEMP SOLUTION
-
-        return view('deal.index', ['deals' => $deals, 'chartData' => $getPnlHistory->execute()]);
+        return view('deal.index', ['deals' => $deals, 'filters' => $filters, 'bots' => Bot::get(), 'pairs' => $pairs, 'chartData' => $getPnlHistory->execute()]);
     }
 
     public function add(
