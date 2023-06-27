@@ -64,78 +64,82 @@
                     <div class="card-header">Deals</div>
                     <div class="card-body">
                         @if($deals->count())
-                            <table class="table deals-table table-bordered">
-                                <thead class="sticky-top table-secondary">
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Pair</th>
-                                    <th>Bot</th>
-                                    <th>Safety orders</th>
-                                    <th>PNL</th>
-                                    <th>Unrealized PNL</th>
-                                    <th>Date open</th>
-                                    <th>Date close</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody class="bg-white">
-                                @foreach($deals as $deal)
+                            <div class="table-responsive">
+                                <table class="table table-sm deals-table table-bordered">
+                                    <thead class="sticky-top table-secondary">
                                     <tr>
-                                        <td>{{$deal->id}}</td>
-                                        <td>{{$deal->pair}}</td>
-                                        <td>{{$deal->bot->name}}({{$deal->bot->id}})</td>
-                                        <td>{{$deal->safety_order_count}}</td>
-                                        <td>{{$deal->date_close ? $deal->getPnl() : ''}}</td>
-                                        <td class="@if($deal->uPnl > 0) text-success @endif @if($deal->uPnl < 0) text-danger @endif">@if(!is_null($deal->uPnl))
-                                                {{$deal->uPnl}} ({{$deal->uPnlPercentage}}%)
-                                            @endif</td>
-                                        <td>{{$deal->date_open}}</td>
-                                        <td>{{$deal->date_close}}</td>
-                                        <td>
-                                            <div class="d-flex justify-content-end">
-                                                <button type="button" class="btn btn-info expander me-2">Expand</button>
-                                                @if(!$deal->isClosed())
-                                                    <button type="button" class="btn btn-success addSOModalButton me-2"
-                                                            data-attr="{{ route('deals.add', $deal)}}">Add SO
-                                                    </button>
-                                                    <button type="button" class="btn btn-danger formModalButton"
-                                                            data-attr="{{ route('deals.close', $deal) }}">Close
-                                                    </button>
-                                                @endif
-                                            </div>
-                                        </td>
+                                        <th>Id</th>
+                                        <th>Pair</th>
+                                        <th>Bot</th>
+                                        <th>Safety orders</th>
+                                        <th>PNL</th>
+                                        <th>Unrealized PNL</th>
+                                        <th>Date open</th>
+                                        <th>Date close</th>
+                                        <th></th>
                                     </tr>
-                                    <tr style="display: none">
-                                        <td colspan="8">
-                                            <table class="table table-striped">
-                                                <p>Average price: {{$deal->getOpenAveragePrice()}}</p>
-                                                <p>Total volume: {{$deal->getTotalVolume()}}</p>
-                                                <thead>
-                                                <tr>
-                                                    <th>Order Id</th>
-                                                    <th>Side</th>
-                                                    <th>Price</th>
-                                                    <th>Volume</th>
-                                                    <th>Created at</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                @foreach($deal->orders as $order)
+                                    </thead>
+                                    <tbody class="bg-white">
+                                    @foreach($deals as $deal)
+                                        <tr>
+                                            <td>{{$deal->id}}</td>
+                                            <td>{{$deal->pair}}</td>
+                                            <td>{{$deal->bot->name}}({{$deal->bot->id}})</td>
+                                            <td>{{$deal->safety_order_count}}</td>
+                                            <td>{{$deal->date_close ? $deal->getPnl() : ''}}</td>
+                                            <td class="@if($deal->uPnl > 0) text-success @endif @if($deal->uPnl < 0) text-danger @endif">@if(!is_null($deal->uPnl))
+                                                    {{$deal->uPnl}} ({{$deal->uPnlPercentage}}%)
+                                                @endif</td>
+                                            <td>{{$deal->date_open}}</td>
+                                            <td>{{$deal->date_close}}</td>
+                                            <td>
+                                                <div class="d-flex justify-content-end">
+                                                    <button type="button" class="btn btn-info expander me-2">Expand
+                                                    </button>
+                                                    @if(!$deal->isClosed())
+                                                        <button type="button"
+                                                                class="btn btn-success addSOModalButton me-2"
+                                                                data-attr="{{ route('deals.add', $deal)}}">Add SO
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger formModalButton"
+                                                                data-attr="{{ route('deals.close', $deal) }}">Close
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr style="display: none">
+                                            <td colspan="9">
+                                                <table class="table table-striped">
+                                                    <p>Average price: {{$deal->getOpenAveragePrice()}}</p>
+                                                    <p>Total volume: {{$deal->getTotalVolume()}}</p>
+                                                    <thead>
                                                     <tr>
-                                                        <td>{{$order->id}}</td>
-                                                        <td class="{{$order->side === 'sell' ? 'text-danger' : 'text-success'}}">{{$order->side}}</td>
-                                                        <td>{{$order->price}}</td>
-                                                        <td>{{$order->volume}}</td>
-                                                        <td>{{$order->created_at}}</td>
+                                                        <th>Order Id</th>
+                                                        <th>Side</th>
+                                                        <th>Price</th>
+                                                        <th>Volume</th>
+                                                        <th>Created at</th>
                                                     </tr>
-                                                @endforeach
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                    @foreach($deal->orders as $order)
+                                                        <tr>
+                                                            <td>{{$order->id}}</td>
+                                                            <td class="{{$order->side === 'sell' ? 'text-danger' : 'text-success'}}">{{$order->side}}</td>
+                                                            <td>{{$order->price}}</td>
+                                                            <td>{{$order->volume}}</td>
+                                                            <td>{{$order->created_at}}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         @else
                             <div class="col-md-8">
                                 <span>There are no deals yet</span>
