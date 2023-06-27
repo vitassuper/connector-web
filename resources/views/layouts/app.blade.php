@@ -34,17 +34,17 @@
                 @auth
                     <ul class="navbar-nav bd-navbar-nav flex-row">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('bots.index') }}">
+                            <a class="nav-link px-2" href="{{ route('bots.index') }}">
                                 Bots
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('exchanges.index') }}">
+                            <a class="nav-link px-2" href="{{ route('exchanges.index') }}">
                                 Exchanges
                             </a>
                         </li>
                         <li>
-                            <a class="nav-link" href="{{ route('deals.index') }}">
+                            <a class="nav-link px-2" href="{{ route('deals.index') }}">
                                 Deals
                             </a>
                         </li>
