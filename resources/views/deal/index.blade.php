@@ -47,7 +47,7 @@
                                         @foreach($pairs as $pair)
                                             <option
                                                 @if(isset($filters['pair']) ? $filters['pair'] === $pair->pair : null) selected
-                                                @endif value="{{$pair->pair}}">{{$pair->pair}}</option>
+                                                @endif value="{{$pair->pair}}">{{$pair->getPairName()}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -83,7 +83,7 @@
                                     @foreach($deals as $deal)
                                         <tr>
                                             <td>{{$deal->id}}</td>
-                                            <td>{{$deal->pair}}</td>
+                                            <td>{{$deal->getPairName()}}</td>
                                             <td>{{$deal->bot->name}}({{$deal->bot->id}})</td>
                                             <td>{{$deal->safety_order_count}}</td>
                                             <td>{{$deal->date_close ? $deal->getPnl() : ''}}</td>

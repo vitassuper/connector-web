@@ -101,6 +101,11 @@ class Deal extends Model
         return (($closeSum - $entrySum) * $sign) - $entryFee - $closeFee;
     }
 
+    public function getPairName(): string
+    {
+        return str_replace(':USDT', '', $this->pair);
+    }
+
     public function getOpenTransactionType(): TransactionType
     {
         if ($this->bot->side === SideType::Long) {

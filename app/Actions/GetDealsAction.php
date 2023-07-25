@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Enums\SideType;
 use Http;
 use App\Models\Deal;
 use App\Enums\DealStatus;
@@ -30,7 +31,7 @@ class GetDealsAction
                     $entrySum = $deal->getOpenAveragePrice() * $deal->getTotalVolume();
                     $currentSum = $record->price * $deal->getTotalVolume();
 
-                    $sign = $deal->side ? 1 : -1;
+                    $sign = $deal->bot->side === SideType::Long ? 1 : -1;
 
                     $deal->uPnl = round(($currentSum - $entrySum) * $sign, 2);
                     $deal->uPnlPercentage = round((($record->price - $deal->getOpenAveragePrice()) / $deal->getOpenAveragePrice()) * 100 * $sign, 2);
