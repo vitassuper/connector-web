@@ -70,6 +70,7 @@
                                     <tr>
                                         <th>Id</th>
                                         <th>Pair</th>
+                                        <th>Position</th>
                                         <th>Bot</th>
                                         <th>Safety orders</th>
                                         <th>PNL</th>
@@ -84,6 +85,7 @@
                                         <tr>
                                             <td>{{$deal->id}}</td>
                                             <td>{{$deal->getPairName()}}</td>
+                                            <td>{{$deal->position}}</td>
                                             <td>{{$deal->bot->name}}({{$deal->bot->id}})</td>
                                             <td>{{$deal->safety_order_count}}</td>
                                             <td>{{$deal->date_close ? $deal->getPnl() : ''}}</td>

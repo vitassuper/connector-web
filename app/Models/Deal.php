@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $date_close
  * @property string|null $pnl
  * @property int $bot_id
+ * @property int|null $position
  * @property-read \App\Models\Bot|null $bot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
  * @property-read int|null $orders_count
@@ -32,6 +33,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|Deal whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deal wherePair($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deal wherePnl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Deal wherePosition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Deal whereSafetyOrderCount($value)
  * @mixin \Eloquent
  */

@@ -2,9 +2,9 @@
 
 namespace App\Actions;
 
-use App\Enums\SideType;
 use Http;
 use App\Models\Deal;
+use App\Enums\SideType;
 use App\Enums\DealStatus;
 use App\DataObjects\DealFiltersObject;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,7 +13,13 @@ class GetDealsAction
 {
     public function execute(DealFiltersObject $filters)
     {
-        $deals = Deal::where(fn (Builder $query) => $this->prepareFilters($query, $filters))->orderBy('date_close', 'desc')->orderBy('date_open', 'desc')
+        $deals = Deal::where(fn (Builder $query) => $this->prepareFilters($query, $filters))
+            ->orderBy('date_close', 'desc')
+            ->orderBy('pair')
+            ->orderBy('bot_id')
+            ->orderBy('position')
+            ->orderBy('date_open', 'desc')
+
             ->with(['orders'])->paginate(50);
 
         // TEMP SOLUTION
