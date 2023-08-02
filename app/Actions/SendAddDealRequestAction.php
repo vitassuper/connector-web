@@ -17,6 +17,7 @@ class SendAddDealRequestAction
             'amount' => $amount,
             'connector_secret' => $bot->secret,
             'pair' => $deal->pair,
+            'position' => $deal->position
         ]);
 
         return $response->successful();

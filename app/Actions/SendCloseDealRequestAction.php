@@ -15,7 +15,8 @@ class SendCloseDealRequestAction
             'type_of_signal' => 'close',
             'bot_id' => $bot->id,
             'connector_secret' => $bot->secret,
-            'pair' => $deal->pair
+            'pair' => $deal->pair,
+            'position' => $deal->position
         ]);
 
         return $response->successful();

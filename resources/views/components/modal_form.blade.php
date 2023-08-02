@@ -13,8 +13,8 @@
             <div class="modal-footer">
                 <form method="POST" action="">
                     @csrf
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">{{$modalBtn}}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
+                    {!! $modalBtn !!}
                 </form>
             </div>
         </div>

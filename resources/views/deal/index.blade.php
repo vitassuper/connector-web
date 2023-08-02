@@ -154,7 +154,7 @@
         </div>
     </div>
     @include('bot.add_safety_order')
-    @include('components.modal_form', ['modalBtn' => 'Close'])
+    @include('components.modal_form', ['modalBtn' => '<button type="submit" class="btn btn-danger">Close</button>'])
     <script type="module">
         $('.expander').click(function () {
             $(this).closest('tr').next().toggle();

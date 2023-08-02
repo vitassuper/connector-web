@@ -14,7 +14,7 @@
                 <form method="POST" action="">
                     @method('delete')
                     @csrf
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
                     <button type="submit" class="btn btn-primary">Delete</button>
                 </form>
             </div>
