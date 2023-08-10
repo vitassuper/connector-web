@@ -38,7 +38,8 @@
                                     <select id="exchange" class="form-select @error('exchange') is-invalid @enderror"
                                             name="exchange" required>
                                         @foreach($exchanges as $exchange)
-                                            <option value="{{$exchange->id}}"
+                                            <option @if($bot->exchange_id === $exchange->id) selected
+                                                    @endif value="{{$exchange->id}}"
                                                     data-type="{{$exchange->type}}">{{$exchange->name}}</option>
                                         @endforeach
                                     </select>

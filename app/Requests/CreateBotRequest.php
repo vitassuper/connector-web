@@ -15,17 +15,18 @@ class CreateBotRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ],
             'exchange' => [
                 'required',
                 'numeric',
-                Rule::exists(Exchange::class, 'id')
+                Rule::exists(Exchange::class, 'id'),
             ],
             'side' => [
                 'required_if:copy_bot_id,null',
                 'nullable',
-                Rule::in(array_keys(Bot::getAvailableSides()))
+                'numeric',
+                Rule::in(array_keys(Bot::getAvailableSides())),
             ],
             'secret' => [
                 'required_if:copy_bot_id,null',
@@ -36,8 +37,8 @@ class CreateBotRequest extends FormRequest
             'copy_bot_id' => [
                 'nullable',
                 'numeric',
-                Rule::exists(Bot::class, 'id')
-            ]
+                Rule::exists(Bot::class, 'id'),
+            ],
         ];
     }
 }
