@@ -14,12 +14,12 @@ class CreateExchangeRequest extends BaseRequest
             'name' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ],
             'type' => [
                 'required',
                 'string',
-                Rule::in(Exchange::getAvailableTypes())
+                Rule::in(Exchange::getAvailableTypes()),
             ],
             'api_key' => [
                 'required',
@@ -29,8 +29,12 @@ class CreateExchangeRequest extends BaseRequest
             'api_secret' => [
                 'required',
                 'string',
-                'max:255'
-            ]
+                'max:255',
+            ],
+            'hedge' => [
+                'nullable',
+                'boolean',
+            ],
         ];
     }
 }

@@ -10,7 +10,7 @@ class CreateExchangeAction
 {
     public function execute(ExchangeData $data, User $user): Exchange
     {
-        $exchange = new Exchange(['name' => $data->name, 'type' => $data->type]);
+        $exchange = new Exchange(['name' => $data->name, 'type' => $data->type, 'hedge' => $data->hedge]);
 
         $exchange->setApiKey($data->apiKey);
         $exchange->setApiSecret($data->apiSecret);

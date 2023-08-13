@@ -10,6 +10,7 @@ class ExchangeData
     public string $type;
     public string $apiKey;
     public string $apiSecret;
+    public bool $hedge;
 
     public function __construct(array $data)
     {
@@ -17,6 +18,7 @@ class ExchangeData
         $this->type = $data['type'];
         $this->apiKey = $data['api_key'];
         $this->apiSecret = $data['api_secret'];
+        $this->hedge = $data['hedge'] ?? false;
     }
 
     final public static function fromRequests(CreateExchangeRequest $request): ExchangeData
