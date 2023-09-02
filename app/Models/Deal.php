@@ -41,9 +41,13 @@ class Deal extends Model
 {
     protected $table = 'deals';
 
+    protected $fillable = ['position'];
+
+    public $timestamps = false;
+
     protected $casts = [
         'date_close' => 'datetime:Y-m-d h:i:s',
-        'date_open' => 'datetime:Y-m-d h:i:s'
+        'date_open' => 'datetime:Y-m-d h:i:s',
     ];
 
     public function orders(): HasMany

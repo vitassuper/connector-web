@@ -103,6 +103,11 @@
                                                                 class="btn btn-success addSOModalButton me-2"
                                                                 data-attr="{{ route('deals.add', $deal)}}">Add SO
                                                         </button>
+                                                        <button type="button"
+                                                                class="btn btn-warning me-2 adjustPositionButton"
+                                                                data-attr="{{ route('deals.update', $deal) }}">Adjust
+                                                            pos
+                                                        </button>
                                                         <button type="button" class="btn btn-danger formModalButton"
                                                                 data-attr="{{ route('deals.close', $deal) }}">Close
                                                         </button>
@@ -153,7 +158,8 @@
             </div>
         </div>
     </div>
-    @include('bot.add_safety_order')
+    @include('deal.add_safety_order')
+    @include('deal.adjust_position')
     @include('components.modal_form', ['modalBtn' => '<button type="submit" class="btn btn-danger">Close</button>'])
     <script type="module">
         $('.expander').click(function () {

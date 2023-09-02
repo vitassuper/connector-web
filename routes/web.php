@@ -34,5 +34,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('deals/{deal}/close', [DealController::class, 'close'])->name('deals.close');
     Route::post('deals/{deal}/add', [DealController::class, 'add'])->name('deals.add');
+    Route::post('deals/{deal}', [DealController::class, 'update'])->name('deals.update');
     Route::get('deals', [DealController::class, 'index'])->name('deals.index');
 });

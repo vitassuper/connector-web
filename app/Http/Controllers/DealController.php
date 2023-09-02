@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
 use App\Models\Bot;
 use App\Models\Deal;
+use Illuminate\Http\Request;
 use App\Actions\GetPnlHistory;
 use App\Actions\GetDealsAction;
+use Illuminate\Validation\Rule;
+use App\Actions\UpdateDealAction;
 use App\Requests\ListDealsRequest;
 use Illuminate\Routing\Redirector;
 use Illuminate\Contracts\View\View;
@@ -47,6 +51,29 @@ class DealController extends Controller
         }
 
         return $view;
+    }
+
+    public function update(
+        Deal $deal,
+        Request $request,
+        UpdateDealAction $updateDealAction
+    ): Redirector|Application|RedirectResponse {
+        $validator = Validator::make($request->all(), ['pos_number' => [
+            'required',
+            'numeric',
+            Rule::unique(Deal::class, 'position')->where('pair', $deal->pair)
+                ->where('bot_id', $deal->bot_id),
+        ]]);
+
+        $view = redirect(route('deals.index'));
+
+        if ($validator->fails()) {
+            return $view->with('fail', 'Incorrect position number');
+        }
+
+        $updateDealAction->execute($deal, $request->input('pos_number'));
+
+        return $view->with('success', 'Deal was successfully changed');
     }
 
     public function close(Deal $deal, SendCloseDealRequestAction $sendCloseDealRequestAction): Redirector|Application|RedirectResponse
