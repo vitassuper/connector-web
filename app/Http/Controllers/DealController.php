@@ -61,7 +61,9 @@ class DealController extends Controller
         $validator = Validator::make($request->all(), ['pos_number' => [
             'required',
             'numeric',
-            Rule::unique(Deal::class, 'position')->where('pair', $deal->pair)
+            Rule::unique(Deal::class, 'position')
+                ->whereNull('date_close')
+                ->where('pair', $deal->pair)
                 ->where('bot_id', $deal->bot_id),
         ]]);
 
