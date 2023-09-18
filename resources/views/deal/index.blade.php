@@ -12,13 +12,13 @@
                     <div class="card-body">
                         <form action="{{route('deals.index')}}">
                             <div class="row">
-                                <div class="col-sm-6 col-md-4 col-lg-3">
-                                    <label for="deal_id" class="col-md-4 col-form-label">Deal Id</label>
+                                <div class="col-sm-6 col-md-6 col-lg-2">
+                                    <label for="deal_id" class="col-md-4 col-form-label w-100">Deal Id</label>
                                     <input class="form-control" value="{{$filters['deal_id'] ?? ''}}" name="deal_id"
                                            id="deal_id"/>
                                 </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3">
-                                    <label for="status" class="col-md-4 col-form-label">Status</label>
+                                <div class="col-sm-6 col-md-6 col-lg-2">
+                                    <label for="status" class="col-md-4 col-form-label w-100">Status</label>
                                     <select name="status" id="status" class="form-select">
                                         <option value="">None</option>
                                         @foreach(['active', 'closed'] as $status)
@@ -28,25 +28,23 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3">
-                                    <label for="bot_id" class="col-md-4 col-form-label">Bot Id</label>
-                                    <select name="bot_id" id="bot_id" class="form-select">
-                                        <option value="">None</option>
+                                <div class="col-sm-12 col-md-6 col-lg-4">
+                                    <label for="bot_id" class="col-md-4 col-form-label w-100">Bot Id</label>
+                                    <select id="bot_id" class="form-select" name="bot_id[]" multiple="multiple">
                                         @foreach($bots as $bot)
                                             <option
-                                                @if(isset($filters['bot_id']) ? (int) $filters['bot_id'] === $bot->id : null) selected
+                                                @if(isset($filters['bot_id']) ? (int) in_array($bot->id, $filters['bot_id']) : null) selected
                                                 @endif value="{{$bot->id}}">{{$bot->name}}({{$bot->id}})
                                             </option>
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3">
-                                    <label for="pair" class="col-md-4 col-form-label">Pair</label>
-                                    <select name="pair" id="pair" class="form-select">
-                                        <option value="">None</option>
+                                <div class="col-sm-12 col-md-6 col-lg-4">
+                                    <label for="pair" class="col-md-4 col-form-label w-100">Pair</label>
+                                    <select id="pair" name="pair[]" multiple="multiple" class="form-select">
                                         @foreach($pairs as $pair)
                                             <option
-                                                @if(isset($filters['pair']) ? $filters['pair'] === $pair->pair : null) selected
+                                                @if(isset($filters['pair']) ? in_array($pair->pair, $filters['pair']) : null) selected
                                                 @endif value="{{$pair->pair}}">{{$pair->getPairName()}}</option>
                                         @endforeach
                                     </select>
@@ -101,15 +99,18 @@
                                                     @if(!$deal->isClosed())
                                                         <button type="button"
                                                                 class="btn btn-success addSOModalButton me-2"
-                                                                data-attr="{{ route('deals.add', ['deal' => $deal] + request()->query())}}">Add SO
+                                                                data-attr="{{ route('deals.add', ['deal' => $deal] + request()->query())}}">
+                                                            Add SO
                                                         </button>
                                                         <button type="button"
                                                                 class="btn btn-warning me-2 adjustPositionButton"
-                                                                data-attr="{{ route('deals.update', ['deal' => $deal] + request()->query()) }}">Adjust
+                                                                data-attr="{{ route('deals.update', ['deal' => $deal] + request()->query()) }}">
+                                                            Adjust
                                                             pos
                                                         </button>
                                                         <button type="button" class="btn btn-danger formModalButton"
-                                                                data-attr="{{ route('deals.close', ['deal' => $deal] + request()->query()) }}">Close
+                                                                data-attr="{{ route('deals.close', ['deal' => $deal] + request()->query()) }}">
+                                                            Close
                                                         </button>
                                                     @endif
                                                 </div>
@@ -165,6 +166,32 @@
         $('.expander').click(function () {
             $(this).closest('tr').next().toggle();
         })
+
+        const botSelect = $('#bot_id')
+        const pairSelect = $('#pair')
+
+        botSelect.select2({
+            theme: "bootstrap-5",
+            placeholder: "Select Bot ids",
+            width: '100%',
+            closeOnSelect: false,
+        });
+        botSelect.parent().find('.select2-search--inline').remove();
+        botSelect.on('change', function () {
+            $('#pair').parent().find('.select2-search--inline').remove();
+        });
+
+        pairSelect.select2({
+            theme: "bootstrap-5",
+            placeholder: "Select Pairs",
+            width: '100%',
+            closeOnSelect: false,
+        });
+        pairSelect.parent().find('.select2-search--inline').remove();
+        pairSelect.on('change', function () {
+            pairSelect.parent().find('.select2-search--inline').remove();
+        });
+
     </script>
     <script src="
 https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js

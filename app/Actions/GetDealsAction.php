@@ -51,8 +51,8 @@ class GetDealsAction
 
     private function prepareFilters(Builder $query, DealFiltersObject $filters): void
     {
-        if ($botId = $filters->botId) {
-            $query->whereHas('bot', fn (Builder $query) => $query->where('id', $botId));
+        if ($botIds = $filters->botIds) {
+            $query->whereHas('bot', fn (Builder $query) => $query->whereIn('id', $botIds));
         }
 
         if ($dealId = $filters->dealId) {
@@ -65,8 +65,8 @@ class GetDealsAction
             );
         }
 
-        if ($pair = $filters->pair) {
-            $query->where('pair', $pair);
+        if ($pairs = $filters->pairs) {
+            $query->whereIn('pair', $pairs);
         }
     }
 }

@@ -15,23 +15,31 @@ class ListDealsRequest extends BaseRequest
             'status' => [
                 'nullable',
                 'string',
-                Rule::in(['active', 'closed'])
+                Rule::in(['active', 'closed']),
             ],
             'bot_id' => [
                 'nullable',
+                'array',
+            ],
+            'bot_id.*' => [
+                'nullable',
                 'numeric',
-                Rule::exists(Bot::class, 'id')
+                Rule::exists(Bot::class, 'id'),
             ],
             'pair' => [
                 'nullable',
+                'array',
+            ],
+            'pair.*' => [
+                'nullable',
                 'string',
-                'max:64'
+                'max:64',
             ],
             'deal_id' => [
                 'nullable',
                 'numeric',
-                Rule::exists(Deal::class, 'id')
-            ]
+                Rule::exists(Deal::class, 'id'),
+            ],
         ];
     }
 }

@@ -7,15 +7,15 @@ use App\Requests\ListDealsRequest;
 
 class DealFiltersObject
 {
-    public ?string $pair;
-    public ?int $botId;
+    public array $pairs = [];
+    public array $botIds = [];
     public ?DealStatus $status;
     public ?int $dealId;
 
     public function __construct(array $data)
     {
-        $this->botId = $data['bot_id'] ?? null;
-        $this->pair = $data['pair'] ?? null;
+        $this->botIds = $data['bot_id'] ?? [];
+        $this->pairs = $data['pair'] ?? [];
         $this->status = isset($data['status']) ? DealStatus::from($data['status']) : null;
         $this->dealId = $data['deal_id'] ?? null;
     }

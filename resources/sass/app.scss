@@ -7,6 +7,11 @@
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
 @import "prismjs/themes/prism.css";
+@import "select2/src/scss/core";
+
+// Temp solution related to the issue https://github.com/apalfrey/select2-bootstrap-5-theme/issues/75
+$s2bs5-border-color: $border-color;
+@import "select2-bootstrap-5-theme/src/include-all";
 
 .pagination {
     justify-content: center;
