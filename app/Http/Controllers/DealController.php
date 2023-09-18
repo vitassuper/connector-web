@@ -42,7 +42,7 @@ class DealController extends Controller
     ): Redirector|Application|RedirectResponse {
         $result = $sendAddDealRequestAction->execute($deal, $request->input('amount'));
 
-        $view = redirect(route('deals.index'));
+        $view = redirect(route('deals.index', $request->query()));
 
         if ($result) {
             $view->with('success', 'Deal was successfully averaged');
@@ -67,7 +67,7 @@ class DealController extends Controller
                 ->where('bot_id', $deal->bot_id),
         ]]);
 
-        $view = redirect(route('deals.index'));
+        $view = redirect(route('deals.index', $request->query()));
 
         if ($validator->fails()) {
             return $view->with('fail', 'Incorrect position number');
@@ -78,11 +78,11 @@ class DealController extends Controller
         return $view->with('success', 'Deal was successfully changed');
     }
 
-    public function close(Deal $deal, SendCloseDealRequestAction $sendCloseDealRequestAction): Redirector|Application|RedirectResponse
+    public function close(Deal $deal, Request $request, SendCloseDealRequestAction $sendCloseDealRequestAction): Redirector|Application|RedirectResponse
     {
         $result = $sendCloseDealRequestAction->execute($deal);
 
-        $view = redirect(route('deals.index'));
+        $view = redirect(route('deals.index', $request->query()));
 
         if ($result) {
             $view->with('success', 'Deal was successfully closed');

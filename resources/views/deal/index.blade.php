@@ -101,15 +101,15 @@
                                                     @if(!$deal->isClosed())
                                                         <button type="button"
                                                                 class="btn btn-success addSOModalButton me-2"
-                                                                data-attr="{{ route('deals.add', $deal)}}">Add SO
+                                                                data-attr="{{ route('deals.add', ['deal' => $deal] + request()->query())}}">Add SO
                                                         </button>
                                                         <button type="button"
                                                                 class="btn btn-warning me-2 adjustPositionButton"
-                                                                data-attr="{{ route('deals.update', $deal) }}">Adjust
+                                                                data-attr="{{ route('deals.update', ['deal' => $deal] + request()->query()) }}">Adjust
                                                             pos
                                                         </button>
                                                         <button type="button" class="btn btn-danger formModalButton"
-                                                                data-attr="{{ route('deals.close', $deal) }}">Close
+                                                                data-attr="{{ route('deals.close', ['deal' => $deal] + request()->query()) }}">Close
                                                         </button>
                                                     @endif
                                                 </div>
