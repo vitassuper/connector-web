@@ -58,6 +58,23 @@
                         </form>
                     </div>
                 </div>
+                <div class="card mb-3">
+                    <div class="card-header">
+                        Total amounts
+                    </div>
+                    <div class="card-body">
+                        @foreach($botsStats as $botStats)
+                            <div class="row py-2" style="border-bottom: 1px solid black">
+                                <div class="col-2">{{$botStats['bot_name']}}({{$botStats['bot_id']}}):</div>
+                                <div class="col-10">
+                                    @foreach($botStats['stats'] as $pair => $volume)
+                                        <span class="fs-6 badge bg-success">{{$pair}} - {{$volume}}</span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-header">Deals</div>
                     <div class="card-body">

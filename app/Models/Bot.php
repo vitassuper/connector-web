@@ -57,7 +57,7 @@ class Bot extends Model
     ];
 
     protected $casts = [
-        'side' => SideType::class
+        'side' => SideType::class,
     ];
 
     public function copyBot(): BelongsTo
@@ -76,6 +76,11 @@ class Bot extends Model
     public function getSideLabel(): string
     {
         return $this->side->value ? 'Long' : 'Short';
+    }
+
+    public function deals()
+    {
+        return $this->hasMany(Deal::class, 'bot_id');
     }
 
     public function exchange(): BelongsTo

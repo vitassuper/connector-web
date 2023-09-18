@@ -6,6 +6,7 @@ use Validator;
 use App\Models\Bot;
 use App\Models\Deal;
 use Illuminate\Http\Request;
+use App\Actions\GetBotsStats;
 use App\Actions\GetPnlHistory;
 use App\Actions\GetDealsAction;
 use Illuminate\Validation\Rule;
@@ -23,16 +24,27 @@ use Illuminate\Contracts\Foundation\Application;
 
 class DealController extends Controller
 {
-    public function index(ListDealsRequest $request, GetDealsAction $getDealsAction, GetPnlHistory $getPnlHistory): Factory|View|Application
-    {
+    public function index(
+        ListDealsRequest $request,
+        GetBotsStats $getBotsStats,
+        GetDealsAction $getDealsAction,
+        GetPnlHistory $getPnlHistory
+    ): Factory|View|Application {
+        $data = DealFiltersObject::fromRequest($request);
+
         $pairs = Deal::groupBy('pair')->select('pair')->get();
 
-        $deals = $getDealsAction->execute(DealFiltersObject::fromRequest($request));
+        $botsStats = $getBotsStats->execute($data);
+        $deals = $getDealsAction->execute($data);
         $filters = $request->validated();
 
         $deals->appends($filters);
 
-        return view('deal.index', ['deals' => $deals, 'filters' => $filters, 'bots' => Bot::get(), 'pairs' => $pairs, 'chartData' => $getPnlHistory->execute()]);
+        return view('deal.index', ['deals' => $deals,
+            'filters' => $filters, 'bots' => Bot::get(),
+            'pairs' => $pairs,
+            'botsStats' => $botsStats,
+            'chartData' => $getPnlHistory->execute()]);
     }
 
     public function add(
