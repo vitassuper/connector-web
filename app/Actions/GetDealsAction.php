@@ -2,15 +2,25 @@
 
 namespace App\Actions;
 
-use Http;
 use App\Models\Deal;
 use App\Enums\SideType;
 use App\Enums\DealStatus;
 use App\DataObjects\DealFiltersObject;
 use Illuminate\Database\Eloquent\Builder;
+use App\Actions\Deals\GetCoinsVolumeAction;
+use App\Actions\Deals\GetCurPricesFromBinanceAction;
 
 class GetDealsAction
 {
+    private GetCoinsVolumeAction $getCoinsVolumeAction;
+    private GetCurPricesFromBinanceAction $getCurPricesFromBinanceAction;
+
+    public function __construct(GetCoinsVolumeAction $getCoinsVolumeAction, GetCurPricesFromBinanceAction $getCurPricesFromBinanceAction)
+    {
+        $this->getCoinsVolumeAction = $getCoinsVolumeAction;
+        $this->getCurPricesFromBinanceAction = $getCurPricesFromBinanceAction;
+    }
+
     public function execute(DealFiltersObject $filters)
     {
         $deals = Deal::where(fn (Builder $query) => $this->prepareFilters($query, $filters))
@@ -22,11 +32,10 @@ class GetDealsAction
 
             ->with(['orders'])->paginate(50);
 
-        // TEMP SOLUTION
-        $result = Http::get('https://fapi.binance.com/fapi/v1/ticker/price');
-        $prices = collect(json_decode($result->body()));
+        $prices = $this->getCurPricesFromBinanceAction->execute();
+        $coinsVolume = $this->getCoinsVolumeAction->execute();
 
-        $deals->each(function ($deal) use ($prices) {
+        $deals->each(function ($deal) use ($prices, $coinsVolume) {
             if (null === $deal->date_close) {
                 $record = $prices->firstWhere('symbol', str_replace('/', '', strstr($deal->pair, ':', true)));
 
@@ -41,10 +50,13 @@ class GetDealsAction
 
                     $deal->uPnl = round(($currentSum - $entrySum) * $sign, 2);
                     $deal->uPnlPercentage = round((($record->price - $deal->getOpenAveragePrice()) / $deal->getOpenAveragePrice()) * 100 * $sign, 2);
+
+                    $exchangeCurrentSum = $record->price * $coinsVolume->get($deal->pair);
+                    $exchangeEntrySum = $deal->getOpenAveragePrice() * $coinsVolume->get($deal->pair);
+                    $deal->exchangePnl = round(($exchangeCurrentSum - $exchangeEntrySum) * $sign, 2);
                 }
             }
         });
-        // TEMP SOLUTION
 
         return $deals;
     }
