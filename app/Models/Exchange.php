@@ -52,7 +52,7 @@ class Exchange extends Model
     {
         return [
             self::BINANCE_TYPE,
-            self::OKEX_TYPE
+            self::OKEX_TYPE,
         ];
     }
 
@@ -64,6 +64,16 @@ class Exchange extends Model
     public function getApiKeyShard(): string
     {
         return substr(CryptHelper::decrypt($this->api_key), -6);
+    }
+
+    public function getApiKey(): string
+    {
+        return CryptHelper::decrypt($this->api_key);
+    }
+
+    public function getApiSecret(): string
+    {
+        return CryptHelper::decrypt($this->api_secret);
     }
 
     public function setApiSecret(string $value): void

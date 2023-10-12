@@ -4,57 +4,68 @@ namespace App\Actions;
 
 use App\Models\Deal;
 use App\Enums\SideType;
+use ccxt\async\binance;
+use App\Models\Exchange;
 use App\Enums\DealStatus;
+use function React\Async\await;
+use function React\Promise\all;
 use App\DataObjects\DealFiltersObject;
 use Illuminate\Database\Eloquent\Builder;
-use App\Actions\Deals\GetCoinsVolumeAction;
-use App\Actions\Deals\GetCurPricesFromBinanceAction;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class GetDealsAction
 {
-    private GetCoinsVolumeAction $getCoinsVolumeAction;
-    private GetCurPricesFromBinanceAction $getCurPricesFromBinanceAction;
-
-    public function __construct(GetCoinsVolumeAction $getCoinsVolumeAction, GetCurPricesFromBinanceAction $getCurPricesFromBinanceAction)
-    {
-        $this->getCoinsVolumeAction = $getCoinsVolumeAction;
-        $this->getCurPricesFromBinanceAction = $getCurPricesFromBinanceAction;
-    }
-
-    public function execute(DealFiltersObject $filters)
+    public function execute(DealFiltersObject $filters): LengthAwarePaginator
     {
         $deals = Deal::where(fn (Builder $query) => $this->prepareFilters($query, $filters))
+            ->with('bot.exchange')
             ->orderBy('date_close', 'desc')
             ->orderBy('pair')
             ->orderBy('bot_id')
             ->orderBy('position')
             ->orderBy('date_open', 'desc')
-
             ->with(['orders'])->paginate(50);
 
-        $prices = $this->getCurPricesFromBinanceAction->execute();
-        $coinsVolume = $this->getCoinsVolumeAction->execute();
+        $exchangeModels = $deals->getCollection()->pluck('bot.exchange')->unique()
+            ->filter(fn (Exchange $exchange) => $exchange->type === Exchange::BINANCE_TYPE);
 
-        $deals->each(function ($deal) use ($prices, $coinsVolume) {
-            if (null === $deal->date_close) {
-                $record = $prices->firstWhere('symbol', str_replace('/', '', strstr($deal->pair, ':', true)));
+        $exchangePositions = [];
+        $promises = [];
 
-                if ($record === null) {
-                    $deal->uPnl = null;
-                    $deal->uPnlPercentage = null;
-                } else {
-                    $entrySum = $deal->getOpenAveragePrice() * $deal->getTotalVolume();
-                    $currentSum = $record->price * $deal->getTotalVolume();
+        /** @var Exchange $exchangeModel */
+        foreach ($exchangeModels as $exchangeModel) {
+            $exchange = new binance([
+                'apiKey' => $exchangeModel->getApiKey(),
+                'secret' => $exchangeModel->getApiSecret(),
+                'enableRateLimit' => true,
+                'options' => ['defaultType' => 'future'],
+            ]);
 
-                    $sign = $deal->bot->side === SideType::Long ? 1 : -1;
-
-                    $deal->uPnl = round(($currentSum - $entrySum) * $sign, 2);
-                    $deal->uPnlPercentage = round((($record->price - $deal->getOpenAveragePrice()) / $deal->getOpenAveragePrice()) * 100 * $sign, 2);
-
-                    $exchangeCurrentSum = $record->price * $coinsVolume->get($deal->pair);
-                    $exchangeEntrySum = $deal->getOpenAveragePrice() * $coinsVolume->get($deal->pair);
-                    $deal->exchangePnl = round(($exchangeCurrentSum - $exchangeEntrySum) * $sign, 2);
+            $promises[] = $exchange->fetch_positions()->then(
+                function ($res) use ($exchangeModel, &$exchangePositions) {
+                    $exchangePositions[$exchangeModel->id] = $res;
+                },
+                function ($a) {
                 }
+            );
+        }
+
+        await(all($promises));
+
+        $deals->getCollection()->each(function (Deal $deal) use ($exchangePositions) {
+            if (null === $deal->date_close && isset($exchangePositions[$deal->bot->exchange_id])) {
+                $position = collect($exchangePositions[$deal->bot->exchange_id])->first(
+                    fn ($position) => $position['symbol'] === $deal->pair && $position['side'] === strtolower($deal->bot->side->name)
+                );
+
+                $entrySum = $deal->getOpenAveragePrice() * $deal->getTotalVolume();
+                $currentSum = $position['markPrice'] * $deal->getTotalVolume();
+
+                $sign = $deal->bot->side === SideType::Long ? 1 : -1;
+
+                $deal->uPnl = round(($currentSum - $entrySum) * $sign, 2);
+                $deal->uPnlPercentage = round((($position['markPrice'] - $deal->getOpenAveragePrice()) / $deal->getOpenAveragePrice()) * 100 * $sign, 2);
+                $deal->exchangePnl = round(($position['entryPrice'] - $position['markPrice']) * $deal->getTotalVolume() * $sign, 2);
             }
         });
 
