@@ -5,9 +5,9 @@ services:
             context: ./
             dockerfile: Dockerfile
         image: connector-web
-        working_dir: /home/www/
+        working_dir: /var/www/
         volumes:
-            - ./:/home/www
+            - ./:/var/www
 
     nginx:
         image: nginx:alpine

@@ -1,21 +1,22 @@
 FROM php:8.1-fpm
 
-# Install system dependencies
+# Install system dependencies and clear cache
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
     npm \
     libonig-dev \
+    libpq-dev \
+    libgmp-dev \
     libxml2-dev \
     zip \
-    unzip
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    unzip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_pgsql pdo_mysql mbstring exif pcntl bcmath gd gmp
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -26,6 +27,11 @@ RUN mkdir -p /home/www/.composer && \
     chown -R www:www /home/www
 
 # Set working directory
-WORKDIR /home/www
+WORKDIR /var/www
+
+COPY . .
+
+RUN npm install
+RUN npm run build
 
 USER www
