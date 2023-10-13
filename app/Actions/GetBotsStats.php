@@ -15,7 +15,7 @@ class GetBotsStats
         $bots = Bot::with(
             ['deals' => fn (HasMany $query) => $query->whereNull('date_close')->where(
                 fn (Builder $query) => $this->prepareDealFilters($query, $filters)
-            )->with('orders')]
+            )->with(['orders', 'bot'])]
         )->whereHas('deals', fn (Builder $query) => $query->whereNull('date_close'))
             ->where(fn (Builder $query) => $this->prepareBotFilters($query, $filters))
             ->get();

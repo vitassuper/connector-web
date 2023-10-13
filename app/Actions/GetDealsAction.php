@@ -18,13 +18,13 @@ class GetDealsAction
     public function execute(DealFiltersObject $filters): LengthAwarePaginator
     {
         $deals = Deal::where(fn (Builder $query) => $this->prepareFilters($query, $filters))
-            ->with('bot.exchange')
+            ->with(['bot.exchange', 'orders'])
             ->orderBy('date_close', 'desc')
             ->orderBy('pair')
             ->orderBy('bot_id')
             ->orderBy('position')
             ->orderBy('date_open', 'desc')
-            ->with(['orders'])->paginate(50);
+            ->paginate(50);
 
         $exchangeModels = $deals->getCollection()->pluck('bot.exchange')->unique()
             ->filter(fn (Exchange $exchange) => $exchange->type === Exchange::BINANCE_TYPE);
@@ -41,7 +41,7 @@ class GetDealsAction
                 'options' => ['defaultType' => 'future'],
             ]);
 
-            $promises[] = $exchange->fetch_positions()->then(
+            $promises[] = $exchange->fapiPrivateV2GetPositionRisk()->then(
                 function ($res) use ($exchangeModel, &$exchangePositions) {
                     $exchangePositions[$exchangeModel->id] = $res;
                 },
@@ -53,9 +53,11 @@ class GetDealsAction
         await(all($promises));
 
         $deals->getCollection()->each(function (Deal $deal) use ($exchangePositions) {
+            $pair = str_replace('/', '', strstr($deal->pair, ':', true));
+
             if (null === $deal->date_close && isset($exchangePositions[$deal->bot->exchange_id])) {
                 $position = collect($exchangePositions[$deal->bot->exchange_id])->first(
-                    fn ($position) => $position['symbol'] === $deal->pair && $position['side'] === strtolower($deal->bot->side->name)
+                    fn ($position) => $position['symbol'] === $pair && $position['positionSide'] === strtoupper($deal->bot->side->name)
                 );
 
                 $entrySum = $deal->getOpenAveragePrice() * $deal->getTotalVolume();
@@ -64,8 +66,8 @@ class GetDealsAction
                 $sign = $deal->bot->side === SideType::Long ? 1 : -1;
 
                 $deal->uPnl = round(($currentSum - $entrySum) * $sign, 2);
-                $deal->uPnlPercentage = round((($position['markPrice'] - $deal->getOpenAveragePrice()) / $deal->getOpenAveragePrice()) * 100 * $sign, 2);
-                $deal->exchangePnl = round(($position['entryPrice'] - $position['markPrice']) * $deal->getTotalVolume() * $sign, 2);
+                $deal->uPnlPercentage = round((((float) $position['markPrice'] - $deal->getOpenAveragePrice()) / $deal->getOpenAveragePrice()) * 100 * $sign, 2);
+                $deal->exchangePnl = round(((float) $position['entryPrice'] - (float) $position['markPrice']) * $deal->getTotalVolume() * $sign, 2);
             }
         });
 
