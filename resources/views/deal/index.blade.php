@@ -105,8 +105,9 @@
                                             <td>{{$deal->safety_order_count}}</td>
                                             <td>{{$deal->date_close ? $deal->getPnl() : ''}}</td>
                                             @if(isset($deal->uPnl))
-                                                <td class="@if($deal->uPnl > 0) text-success @endif @if($deal->uPnl < 0) text-danger @endif">
-                                                    {{$deal->uPnl}} ({{$deal->uPnlPercentage}}%) [{{$deal->exchangePnl}}]
+                                                <td>
+                                                    <span class="@if($deal->uPnl > 0) text-success @endif @if($deal->uPnl < 0) text-danger @endif">{{$deal->uPnl}} ({{$deal->uPnlPercentage}}%)</span>
+                                                    <span class="@if($deal->exchangePnl > 0) text-success @endif @if($deal->exchangePnl < 0) text-danger @endif">[{{$deal->exchangePnl}}]</span>
                                                 </td>
                                             @else
                                                 <td></td>
