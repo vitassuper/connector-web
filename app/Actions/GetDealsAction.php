@@ -67,7 +67,7 @@ class GetDealsAction
 
                 $deal->uPnl = round(($currentSum - $entrySum) * $sign, 2);
                 $deal->uPnlPercentage = round((((float) $position['markPrice'] - $deal->getOpenAveragePrice()) / $deal->getOpenAveragePrice()) * 100 * $sign, 2);
-                $deal->exchangePnl = round(((float) $position['entryPrice'] - (float) $position['markPrice']) * $deal->getTotalVolume() * $sign, 2);
+                $deal->exchangePnl = round(((float) $position['markPrice'] - (float) $position['entryPrice']) * $deal->getTotalVolume() * $sign, 2);
             }
         });
 
