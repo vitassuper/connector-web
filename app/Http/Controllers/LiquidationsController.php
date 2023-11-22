@@ -42,7 +42,10 @@ class LiquidationsController extends Controller
 
         $liquidations->each(function ($liquidation) use ($klines) {
             $kline = $klines->first(fn ($kline) => $kline[0] / 1000 === $liquidation->created_at->timestamp);
-            $liquidation->trade_volume = $kline[5];
+            if($kline) {
+                $liquidation->trade_volume = $kline[5];
+                $liquidation->percentage = $liquidation->total_volume / $liquidation->trade_volume * 100;
+            }
         });
 
         return view('liquidations', ['liquidations' => $liquidations, 'symbols' => $symbols, 'selected_symbol' => $symbol]);

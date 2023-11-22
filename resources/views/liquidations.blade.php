@@ -33,6 +33,9 @@
                     Trade Volume
                 </th>
                 <th>
+                    Percentage
+                </th>
+                <th>
                     Datetime
                 </th>
             </tr>
@@ -44,6 +47,7 @@
                     <td>{{$liquidation->side}}</td>
                     <td>{{$liquidation->total_volume}}</td>
                     <td>{{$liquidation->trade_volume ?? ''}}</td>
+                    <td>{{$liquidation->percentage ? round($liquidation->percentage, 3) : '0'}}%</td>
                     <td>{{$liquidation->created_at->toDateTimeString()}}</td>
                 </tr>
             @endforeach
