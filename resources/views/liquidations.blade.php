@@ -46,8 +46,8 @@
                     <td>{{$liquidation->symbol}}</td>
                     <td>{{$liquidation->side}}</td>
                     <td>{{$liquidation->total_volume}}</td>
-                    <td>{{$liquidation->trade_volume ?? ''}}</td>
-                    <td>{{$liquidation->percentage ? round($liquidation->percentage, 3) : '0'}}%</td>
+                    <td>{{$liquidation->trade_volume}}</td>
+                    <td>{{round($liquidation->percentage, 3)}}%</td>
                     <td>{{$liquidation->created_at->toDateTimeString()}}</td>
                 </tr>
             @endforeach

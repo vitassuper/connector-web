@@ -32,6 +32,8 @@ class LiquidationsController extends Controller
                 'symbol' => $symbol,
                 'side' => $side,
                 'total_volume' => $totalVolume,
+                'trade_volume' => 0,
+                'percentage' => 0,
                 'created_at' => Carbon::createFromTimestamp($intervalTimestamp),
             ];
         })->sortBy(function ($item) {
