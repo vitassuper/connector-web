@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Liquidation;
 use Illuminate\Http\Request;
+use App\Actions\GetKlinesForRangeAction;
 
 class LiquidationsController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, GetKlinesForRangeAction $getKlinesForRangeAction)
     {
         $symbol = $request->input('symbol', 'BTCUSDT');
+
         $liquidations = Liquidation::where('symbol', $symbol)->get();
 
         $symbols = Liquidation::groupBy('symbol')->select('symbol')->get();
@@ -35,6 +37,13 @@ class LiquidationsController extends Controller
         })->sortBy(function ($item) {
             return $item->created_at->timestamp; // Sort by the interval timestamp
         })->values();
+
+        $klines = collect($getKlinesForRangeAction->execute($symbol, $liquidations->first()->created_at->timestamp, $liquidations->last()->created_at->timestamp));
+
+        $liquidations->each(function ($liquidation) use ($klines) {
+            $kline = $klines->first(fn ($kline) => $kline[0] / 1000 === $liquidation->created_at->timestamp);
+            $liquidation->trade_volume = $kline[5];
+        });
 
         return view('liquidations', ['liquidations' => $liquidations, 'symbols' => $symbols, 'selected_symbol' => $symbol]);
     }

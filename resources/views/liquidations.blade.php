@@ -30,6 +30,9 @@
                     Quantity
                 </th>
                 <th>
+                    Trade Volume
+                </th>
+                <th>
                     Datetime
                 </th>
             </tr>
@@ -40,6 +43,7 @@
                     <td>{{$liquidation->symbol}}</td>
                     <td>{{$liquidation->side}}</td>
                     <td>{{$liquidation->total_volume}}</td>
+                    <td>{{$liquidation->trade_volume ?? ''}}</td>
                     <td>{{$liquidation->created_at->toDateTimeString()}}</td>
                 </tr>
             @endforeach
