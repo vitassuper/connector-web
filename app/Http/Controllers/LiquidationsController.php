@@ -15,19 +15,20 @@ class LiquidationsController extends Controller
 
         $symbols = Liquidation::groupBy('symbol')->select('symbol')->get();
 
-        $liquidations = $liquidations->groupBy(function ($item) {
+        $liquidations = $liquidations->groupBy(function (Liquidation $item) {
             // Calculate the five-minute interval using Carbon
             $fiveMinuteInterval = floor($item->created_at->timestamp / 300) * 300;
 
             // Group by symbol and the calculated five-minute interval
-            return $item->symbol . '-' . $fiveMinuteInterval;
+            return $item->symbol . '-' . $item->side . '-' . $fiveMinuteInterval;
         })->map(function ($group, $key) {
             // Perform aggregation for each group
-            [$symbol, $intervalTimestamp] = explode('-', $key);
+            [$symbol, $side, $intervalTimestamp] = explode('-', $key);
             $totalVolume = $group->sum('quantity');
 
             return (object) [
                 'symbol' => $symbol,
+                'side' => $side,
                 'total_volume' => $totalVolume,
                 'created_at' => Carbon::createFromTimestamp($intervalTimestamp),
             ];

@@ -24,6 +24,9 @@
                     Symbol
                 </th>
                 <th>
+                    Side
+                </th>
+                <th>
                     Quantity
                 </th>
                 <th>
@@ -35,6 +38,7 @@
             @foreach($liquidations as $liquidation)
                 <tr>
                     <td>{{$liquidation->symbol}}</td>
+                    <td>{{$liquidation->side}}</td>
                     <td>{{$liquidation->total_volume}}</td>
                     <td>{{$liquidation->created_at->toDateTimeString()}}</td>
                 </tr>
