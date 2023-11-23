@@ -45,7 +45,7 @@
                 <tr>
                     <td>{{$liquidation->symbol}}</td>
                     <td>{{$liquidation->side}}</td>
-                    <td>{{$liquidation->total_volume}}</td>
+                    <td>{{$liquidation->volume}}</td>
                     <td>{{$liquidation->trade_volume}}</td>
                     <td>{{round($liquidation->percentage, 3)}}%</td>
                     <td>{{$liquidation->created_at->toDateTimeString()}}</td>
@@ -53,5 +53,6 @@
             @endforeach
             </tbody>
         </table>
+        {{$liquidations->appends(['symbol' => $selected_symbol])->links()}}
     </div>
 @endsection

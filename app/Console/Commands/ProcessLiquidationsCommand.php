@@ -39,10 +39,9 @@ class ProcessLiquidationsCommand extends Command
     private function processLiquidations(string $symbol, $liquidations): void
     {
         $liquidations->groupBy(function (Liquidation $item) {
-            // Calculate the five-minute interval using Carbon
+            // Calculate the minute interval using Carbon
             $minuteInterval = floor($item->created_at->timestamp / 60) * 60;
 
-            // Group by symbol and the calculated five-minute interval
             return $item->side . '-' . $minuteInterval;
         })->each(function ($group, $key) use ($symbol) {
             [$side, $intervalTimestamp] = explode('-', $key);
