@@ -28,6 +28,8 @@ class ProcessLiquidationsCommand extends Command
                 $liquidations = Liquidation::where('symbol', $symbol)->get();
             } else {
                 $liquidations = Liquidation::where('created_at', '>=', $lastProcessedLiquidation->created_at)->where('symbol', $symbol)->get();
+
+                $lastProcessedLiquidation->delete();
             }
 
             $this->processLiquidations($symbol, $liquidations);
