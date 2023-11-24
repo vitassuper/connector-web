@@ -44,7 +44,7 @@
             @foreach($liquidations as $liquidation)
                 <tr>
                     <td>{{$liquidation->symbol}}</td>
-                    <td>{{$liquidation->side}}</td>
+                    <td>{{$liquidation->side === 'BUY' ? 'Short liquidation' : 'Long liquidation'}}</td>
                     <td>{{$liquidation->volume}}</td>
                     <td>{{$liquidation->trade_volume}}</td>
                     <td>{{round($liquidation->percentage, 3)}}%</td>
