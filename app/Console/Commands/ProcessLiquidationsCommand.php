@@ -40,21 +40,25 @@ class ProcessLiquidationsCommand extends Command
 
     private function processLiquidations(string $symbol, $liquidations): void
     {
-        $liquidations->groupBy(function (Liquidation $item) {
+        $processedLiquidations = $liquidations->groupBy(function (Liquidation $item) {
             // Calculate the minute interval using Carbon
             $minuteInterval = floor($item->created_at->timestamp / 60) * 60;
 
             return $item->side . '-' . $minuteInterval;
-        })->each(function ($group, $key) use ($symbol) {
+        })->map(function ($group, $key) use ($symbol) {
             [$side, $intervalTimestamp] = explode('-', $key);
             $totalVolume = $group->sum('quantity');
 
-            ProcessedLiquidation::create([
+            return [
                 'symbol' => $symbol,
                 'side' => $side,
                 'volume' => $totalVolume,
                 'created_at' => Carbon::createFromTimestamp($intervalTimestamp),
-            ]);
+            ];
+        });
+
+        $processedLiquidations->chunk(1000)->each(function ($chunk) {
+            ProcessedLiquidation::insert($chunk->toArray());
         });
     }
 }
