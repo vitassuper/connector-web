@@ -20,16 +20,16 @@ class ProcessLiquidationsCommand extends Command
             ->select('symbol')->pluck('symbol');
 
         foreach ($symbols as $symbol) {
-            $lastProcessedLiquidation = ProcessedLiquidation::where('symbol', $symbol)
-                ->orderBy('created_at', 'desc')->first();
+            $lastCreatedAt = ProcessedLiquidation::where('symbol', $symbol)
+                ->orderBy('created_at', 'desc')->value('created_at');
 
-            if (!$lastProcessedLiquidation) {
+            if (!$lastCreatedAt) {
                 //TODO: Use chunks for saving memory
                 $liquidations = Liquidation::where('symbol', $symbol)->get();
             } else {
-                $liquidations = Liquidation::where('created_at', '>=', $lastProcessedLiquidation->created_at)->where('symbol', $symbol)->get();
+                $liquidations = Liquidation::where('created_at', '>=', $lastCreatedAt)->where('symbol', $symbol)->get();
 
-                $lastProcessedLiquidation->delete();
+                ProcessedLiquidation::where('created_at', $lastCreatedAt)->where('symbol', $symbol)->delete();
             }
 
             $this->processLiquidations($symbol, $liquidations);
